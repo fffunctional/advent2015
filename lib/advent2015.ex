@@ -133,54 +133,49 @@ defmodule Advent2015 do
     has_non_overlapping_pair(string) && has_repeating_letter(string)
   end
 
-  def do_lights(map, "turn on", x1, x2, y1, y2) do
+  defp light_range(x1, x2, y1, y2) do
     for x <- String.to_integer(x1)..String.to_integer(x2),
         y <- String.to_integer(y1)..String.to_integer(y2) do
         {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+    end
+  end
+
+  def do_lights(map, "turn on", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.put(acc, key, true)
     end)
   end
-  def do_lights(map, "turn off", x1, x2, y1, y2) do
-    for x <- String.to_integer(x1)..String.to_integer(x2),
-        y <- String.to_integer(y1)..String.to_integer(y2) do
-        {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+  def do_lights(map, "turn off", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.put(acc, key, false)
     end)
   end
-  def do_lights(map, "toggle", x1, x2, y1, y2) do
-    for x <- String.to_integer(x1)..String.to_integer(x2),
-        y <- String.to_integer(y1)..String.to_integer(y2) do
-        {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+  def do_lights(map, "toggle", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.update(acc, key, true, fn val -> not val end)
     end)
   end
 
-  def do_lights2(map, "turn on", x1, x2, y1, y2) do
-    for x <- String.to_integer(x1)..String.to_integer(x2),
-        y <- String.to_integer(y1)..String.to_integer(y2) do
-        {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+  def do_lights2(map, "turn on", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.update(acc, key, 1, fn val -> val + 1 end)
     end)
   end
-  def do_lights2(map, "turn off", x1, x2, y1, y2) do
-    for x <- String.to_integer(x1)..String.to_integer(x2),
-        y <- String.to_integer(y1)..String.to_integer(y2) do
-        {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+  def do_lights2(map, "turn off", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.update(acc, key, 0, fn val ->
         if val == 0 do 0 else val - 1 end
        end)
     end)
   end
-  def do_lights2(map, "toggle", x1, x2, y1, y2) do
-    for x <- String.to_integer(x1)..String.to_integer(x2),
-        y <- String.to_integer(y1)..String.to_integer(y2) do
-        {x, y}
-    end |> Enum.reduce(map, fn key, acc ->
+  def do_lights2(map, "toggle", light_range) do
+    light_range
+    |> Enum.reduce(map, fn key, acc ->
       Map.update(acc, key, 2, fn val -> val + 2 end)
     end)
   end
@@ -188,13 +183,13 @@ defmodule Advent2015 do
   def lights(map, instruction) do
     [_, action, x1, y1, x2, y2] = ~r/(turn off|toggle|turn on) (\d+),(\d+) through (\d+),(\d+)/
       |> Regex.run(instruction)
-    do_lights(map, action, x1, x2, y1, y2)
+    do_lights(map, action, light_range(x1, x2, y1, y2))
   end
 
   def lights2(map, instruction) do
     [_, action, x1, y1, x2, y2] = ~r/(turn off|toggle|turn on) (\d+),(\d+) through (\d+),(\d+)/
       |> Regex.run(instruction)
-    do_lights2(map, action, x1, x2, y1, y2)
+    do_lights2(map, action, light_range(x1, x2, y1, y2))
   end
 
   def day1a do
