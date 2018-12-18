@@ -32,4 +32,16 @@ defmodule Advent2015Test do
     assert Advent2015.ribbon("2x3x4") == 34
     assert Advent2015.ribbon("1x1x10") == 14
   end
+
+  test "day 3" do
+    assert Advent2015.deliveries(">") == 2
+    assert Advent2015.deliveries("^>v<") == 4
+    assert Advent2015.deliveries("^v^v^v^v^v") == 2
+  end
+
+  test "day 3 part 2" do
+    assert Advent2015.deliveries2("^v") == 3
+    assert Advent2015.deliveries2("^>v<") == 3
+    assert Advent2015.deliveries2("^v^v^v^v^v") == 11
+  end
 end
