@@ -86,9 +86,13 @@ defmodule Advent2015 do
     end) |> Enum.sum |> at_least(count)
   end
 
+  defp count_occurrences(map) do
+    Enum.reduce(map, %{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
+  end
+
   def has_three_vowels(string) do
     string |> String.graphemes
-      |> Enum.reduce(%{}, fn x, acc -> Map.update(acc, x, 1, &(&1 + 1)) end)
+      |> count_occurrences
       |> vowel_count_at_least(3)
   end
 
@@ -107,9 +111,8 @@ defmodule Advent2015 do
       String.slice(string, n, 2)
     end) |> Enum.reduce(["_"], fn pair, acc ->
       if pair == hd(acc) do ["_"|acc] else [pair|acc] end
-    end) |> Enum.reduce(%{}, fn x, acc ->
-      Map.update(acc, x, 1, &(&1 + 1))
     end)
+    |> count_occurrences
     |> Map.delete("_")
     |> Map.values
     |> Enum.any?(fn val -> val > 1 end)
