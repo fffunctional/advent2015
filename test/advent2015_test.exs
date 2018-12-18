@@ -64,4 +64,12 @@ defmodule Advent2015Test do
     assert not Advent2015.nicer?("uurcxstgmygtbstg")
     assert not Advent2015.nicer?("ieodomkazucvgmuy")
   end
+
+  test "day 6 part 1" do
+    assert Advent2015.lights(%{}, "turn on 0,0 through 9,9")
+    |> Map.values |> Enum.filter(&(&1)) |> Enum.count == 100
+    assert Advent2015.lights(%{}, "turn on 0,0 through 9,9")
+    |> Advent2015.lights("turn off 0,0 through 4,4")
+    |> Map.values |> Enum.filter(&(&1)) |> Enum.count == 75
+  end
 end
