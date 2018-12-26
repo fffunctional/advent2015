@@ -2,6 +2,7 @@ defmodule Advent2015Test do
   use ExUnit.Case
   doctest Advent2015
 
+_ = """
   test "greets the world" do
     assert Advent2015.hello() == :world
   end
@@ -71,5 +72,28 @@ defmodule Advent2015Test do
     assert Advent2015.lights(%{}, "turn on 0,0 through 9,9")
     |> Advent2015.lights("turn off 0,0 through 4,4")
     |> Map.values |> Enum.filter(&(&1)) |> Enum.count == 75
+  end
+  """
+
+  test "day 7 part 1" do
+    input = """
+    123 -> x
+    456 -> y
+    x AND y -> d
+    x OR y -> e
+    x LSHIFT 2 -> f
+    y RSHIFT 2 -> g
+    NOT x -> h
+    NOT y -> i
+    """ |> String.split("\n", trim: true)
+    result = Advent2015.run_circuit(input)
+    assert result |> Map.get("x") == 123
+    assert result |> Map.get("y") == 456
+    assert result |> Map.get("d") == 72
+    assert result |> Map.get("e") == 507
+    assert result |> Map.get("f") == 492
+    assert result |> Map.get("g") == 114
+    assert result |> Map.get("h") == -124
+    assert result |> Map.get("i") == -457
   end
 end

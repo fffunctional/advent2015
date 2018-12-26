@@ -192,6 +192,35 @@ defmodule Advent2015 do
     do_lights2(map, action, light_range(x1, x2, y1, y2))
   end
 
+  use Bitwise
+
+  def run_circuit(input) do
+    input |> Enum.reduce(%{}, fn line, acc ->
+      [_, instr, key] = Regex.run(~r/(.*) -> (.*)/, line)
+      cond do
+        Regex.match?(~r/^\d+/, instr) ->
+          Map.put(acc, key, String.to_integer(instr))
+        Regex.match?(~r/AND/, instr) ->
+          [_, key1, key2] = Regex.run(~r/(\w+) AND (\w+)/, instr)
+          Map.put(acc, key, Map.get(acc, key1) &&& Map.get(acc, key2))
+        Regex.match?(~r/OR/, instr) ->
+          [_, key1, key2] = Regex.run(~r/(\w+) OR (\w+)/, instr)
+          Map.put(acc, key, Map.get(acc, key1) ||| Map.get(acc, key2))
+        Regex.match?(~r/LSHIFT/, instr) ->
+          [_, key1, key2] = Regex.run(~r/(\w+) LSHIFT (\d+)/, instr)
+          Map.put(acc, key, Map.get(acc, key1) <<< String.to_integer(key2))
+        Regex.match?(~r/RSHIFT/, instr) ->
+          [_, key1, key2] = Regex.run(~r/(\w+) RSHIFT (\d+)/, instr)
+          Map.put(acc, key, Map.get(acc, key1) >>> String.to_integer(key2))
+        Regex.match?(~r/NOT/, instr) ->
+          [_, key1] = Regex.run(~r/NOT (\w+)/, instr)
+          Map.put(acc, key, bnot(Map.get(acc, key1)))
+        true ->
+          acc
+      end
+    end)
+  end
+
   def day1a do
     day1_input() |> follow
   end
